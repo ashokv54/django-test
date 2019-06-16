@@ -19,6 +19,7 @@ node {
             sh '. env/bin/activate'
             sh 'env/bin/pip install -r requirements.txt'
             sh 'env/bin/python3.6 manage.py test'
+            junit 'reports/junit.xml'
 
         stage 'Deploy'
             echo 'Deploying'
