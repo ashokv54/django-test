@@ -19,6 +19,26 @@ node {
             sh '. env/bin/activate'
             sh 'env/bin/pip install -r requirements.txt'
             sh 'env/bin/python3.6 manage.py test'
+        
+        stage ("Run Unit/Integration Tests") {
+    def testsError = null
+    try {
+        sh '''
+            env/bin/python3.6 manage.py test
+            deactivate
+           '''
+    }
+    catch(err) {
+        testsError = err
+        currentBuild.result = 'FAILURE'
+    }
+    finally {
+        junit 'reports/junit.xml'
+
+        if (testsError) {
+            throw testsError
+        }
+    }
 
         stage 'Deploy'
             echo 'Deploying'
